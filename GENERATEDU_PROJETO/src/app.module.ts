@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PostagemModule } from './postagem/postagem.module';
 import { Tema } from './tema/entities/tema.entity';
 import { TemaModule } from './tema/tema.module';
+import { UsuarioModule } from './usuario/usuario.module';
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { TemaModule } from './tema/tema.module';
       entities: [Tema],
       synchronize: true
     }),
-    TemaModule
+    TemaModule,
+    PostagemModule,
+    UsuarioModule,
   ],
   controllers: [],
   providers: [],
