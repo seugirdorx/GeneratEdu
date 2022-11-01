@@ -45,18 +45,6 @@ export class PostagemService {
         })
     }
 
-    async findByData_hora(data_hora: string): Promise<Postagem[]> {
-        return await this.postagemRepository.find({
-            where: {
-                data_hora: ILike(`%${data_hora}%`)
-            },
-            relations: {
-                tema: true,
-                usuario: true
-            }
-        })
-    }
-
     async create(postagem: Postagem): Promise<Postagem> {
         return await this.postagemRepository.save(postagem)
     }

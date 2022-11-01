@@ -30,12 +30,6 @@ export class PostagemController {
         return this.postagemService.findByTitulo(titulo)
     }
 
-    @Get ('/data/:data')
-    @HttpCode(HttpStatus.OK)
-    findByData_hora(@Param('data_hora') data_hora: string): Promise<Postagem[]> {
-        return this.postagemService.findByData_hora(data_hora)
-    }
-
     @Post ()
     @HttpCode(HttpStatus.CREATED)
     create(@Body() postagem: Postagem): Promise<Postagem> {
