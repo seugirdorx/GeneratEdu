@@ -1,26 +1,39 @@
-import { IsNotEmpty } from "class-validator";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty, MaxLength, MinLength } from "class-validator";
+import { Postagem } from "src/postagem/entities/postagem.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({name: 'tb_users'})
+@Entity({name: 'tb_usuario'})
 export class Usuario {
+
     @PrimaryGeneratedColumn()
-    id: number;
+    @ApiProperty()
+    id: number
 
     @IsNotEmpty()
-    @Column({length: 120, nullable: false})
-    name: string;
+    @MaxLength(255)
+    @Column({length: 255, nullable: false})
+    @ApiProperty()
+    nome: string
+
+    @IsEmail()
+    @IsNotEmpty()
+    @MaxLength(255)
+    @Column({length: 255, nullable: false, unique: true})
+    @ApiProperty({example: "email@email.com.br"})
+    usuario: string
 
     @IsNotEmpty()
-    @Column({length: 120, nullable: false})
-    email: string;
+    @MinLength(8)
+    @Column({length: 255, nullable: false})
+    @ApiProperty()
+    senha: string
 
-    @IsNotEmpty()
-    @Column({length: 120, nullable: false})
-    password: string;
+    @Column({length: 5000, nullable: true})
+    @ApiProperty()
+    foto: string
 
-    @Column({length: 255, nullable: true})
-    photo: string;
-
-    @ManyToOne(() => Usuario, (Usuario) => Usuario.postagem)
-    usuario: Usuario
+    @ApiProperty()
+    @OneToMany(() => Postagem, (postagem) => postagem.usuario)
+    postagem: Postagem[]
 }

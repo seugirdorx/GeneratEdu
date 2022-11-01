@@ -4,11 +4,11 @@ import { TemaController } from "./controller/tema.controller";
 import { Tema } from "./entities/tema.entity";
 import { TemaService } from "./service/tema.service";
 
-@Module({
+@Module ({
     imports: [TypeOrmModule.forFeature([Tema])],
     providers: [TemaService],
     controllers: [TemaController],
-    exports: [TypeOrmModule],
+    exports: [TypeOrmModule]
 })
 
 export class TemaModule {}

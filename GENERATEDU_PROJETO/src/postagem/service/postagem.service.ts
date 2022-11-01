@@ -1,33 +1,58 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Postagem } from '../entities/postagem.entity';
-import { Repository, ILike, DeleteResult } from 'typeorm';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, ILike, DeleteResult } from "typeorm";
+import { Postagem } from "../entities/postagem.entity";
 
 @Injectable()
 export class PostagemService {
     constructor(@InjectRepository(Postagem) private postagemRepository: Repository<Postagem>) {}
 
     async findAll(): Promise<Postagem[]> {
-        return await this.postagemRepository.find({})
+        return await this.postagemRepository.find({
+            relations: {
+                tema: true,
+                usuario: true
+            }
+        })
     }
 
     async findById(id: number): Promise<Postagem> {
         let postagem = await this.postagemRepository.findOne({
             where: {
                 id
+            },
+            relations: {
+                tema: true,
+                usuario: true
             }
         })
 
         if(!postagem)
             throw new HttpException('Postagem não encontrada', HttpStatus.NOT_FOUND)
 
-        return postagem;
+        return postagem
     }
 
-    async findByEducacao(titulo: string): Promise<Postagem[]> {
+    async findByTitulo(titulo: string): Promise<Postagem[]> {
         return await this.postagemRepository.find({
             where: {
                 titulo: ILike(`%${titulo}%`)
+            },
+            relations: {
+                tema: true,
+                usuario: true
+            }
+        })
+    }
+
+    async findByData_hora(data_hora: string): Promise<Postagem[]> {
+        return await this.postagemRepository.find({
+            where: {
+                data_hora: ILike(`%${data_hora}%`)
+            },
+            relations: {
+                tema: true,
+                usuario: true
             }
         })
     }
@@ -37,12 +62,11 @@ export class PostagemService {
     }
 
     async update(postagem: Postagem): Promise<Postagem> {
-        let buscarEducacao = await this.findById(postagem.id)
+        let buscarPostagem = await this.findById(postagem.id)
 
-        if(!buscarEducacao || !postagem.id) {
+        if(!buscarPostagem || !postagem.id) 
             throw new HttpException('Postagem não existe', HttpStatus.NOT_FOUND)
-        }
-
+        
         return await this.postagemRepository.save(postagem)
     }
 
@@ -50,7 +74,7 @@ export class PostagemService {
         let buscarPostagem = await this.findById(id)
 
         if(!buscarPostagem)
-            throw new HttpException('Postagem não existe', HttpStatus.NOT_FOUND)
+            throw new HttpException('Postagem não encontrada', HttpStatus.NOT_FOUND)
 
         return await this.postagemRepository.delete(id)
     }
